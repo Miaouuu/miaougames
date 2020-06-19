@@ -5,9 +5,13 @@ module.exports = (msg) => {
     { discordId: msg.mentions.users.keys().next().value },
     (err, raw) => {
       if (err) throw err;
-      msg.channel.send(
-        raw.wins + " W, " + raw.looses + " L, Total : " + raw.total
-      );
+      if (raw) {
+        msg.channel.send(
+          raw.wins + " W, " + raw.looses + " L, Total : " + raw.total
+        );
+      } else {
+        msg.channel.send("Le joueur n'a pas encore fait une partie.");
+      }
     }
   );
 };
