@@ -4,6 +4,7 @@ const client = new Discord.Client();
 
 const pfcController = require("./pfc/controller");
 const statsController = require("./stats/controller");
+const morpController = require("./morp/controller");
 
 require("dotenv").config();
 
@@ -22,6 +23,8 @@ client.on("message", (msg) => {
     pfcController(client, msg);
   } else if (msg.content.indexOf("?stats ") === 0) {
     statsController(msg);
+  } else if (msg.content.indexOf("?morp ") === 0) {
+    morpController(client, msg);
   }
 });
 
