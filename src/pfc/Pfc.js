@@ -1,4 +1,4 @@
-const { Message } = require("discord.js");
+const User = require("./../models/User");
 
 class Pfc {
   static GAMES = [];
@@ -142,23 +142,46 @@ class Pfc {
     } else if (this.answers[0] === "P") {
       if (this.answers[1] === "C") {
         msg.channel.send("<@" + this.users[0] + "> a gagné !");
+        this.updateUser(0, 1, 0);
+        this.updateUser(1, 0, 1);
       } else if (this.answers[1] === "F") {
         msg.channel.send("<@" + this.users[1] + "> a gagné !");
+        this.updateUser(0, 0, 1);
+        this.updateUser(1, 1, 0);
       }
     } else if (this.answers[0] === "F") {
       if (this.answers[1] === "C") {
         msg.channel.send("<@" + this.users[1] + "> a gagné !");
+        this.updateUser(0, 0, 1);
+        this.updateUser(1, 1, 0);
       } else if (this.answers[1] === "P") {
         msg.channel.send("<@" + this.users[0] + "> a gagné !");
+        this.updateUser(0, 1, 0);
+        this.updateUser(1, 0, 1);
       }
     } else if (this.answers[0] === "C") {
       if (this.answers[1] === "P") {
         msg.channel.send("<@" + this.users[1] + "> a gagné !");
+        this.updateUser(0, 0, 1);
+        this.updateUser(1, 1, 0);
       } else if (this.answers[1] === "F") {
         msg.channel.send("<@" + this.users[0] + "> a gagné !");
+        this.updateUser(0, 1, 0);
+        this.updateUser(1, 0, 1);
       }
     }
     this.deletePfc();
+  }
+
+  updateUser(user, win, loose) {
+    User.updateOne(
+      { discordId: this.users[user] },
+      { $inc: { wins: win, looses: loose, total: 1 } },
+      { upsert: true, setDefaultsOnInsert: true },
+      (err) => {
+        if (err) throw err;
+      }
+    );
   }
 
   deletePfc() {
