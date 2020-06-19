@@ -5,6 +5,10 @@ const pfcController = require("./pfc/controller");
 
 require("dotenv").config();
 
+client.on("ready", () => {
+  client.user.setActivity("concocter un nouveau jeu");
+});
+
 client.on("message", (msg) => {
   if (msg.content.indexOf("?pfc ") === 0) {
     pfcController(client, msg);

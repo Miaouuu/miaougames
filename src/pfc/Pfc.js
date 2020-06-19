@@ -1,3 +1,5 @@
+const { Message } = require("discord.js");
+
 class Pfc {
   static GAMES = [];
 
@@ -11,15 +13,43 @@ class Pfc {
   }
 
   controller(client, originalMessage) {
-    originalMessage.channel.send(
-      "Tu es prêt <@" +
-        originalMessage.mentions.users.keys().next().value +
-        "> ? [Oui/Non]"
-    );
+    originalMessage.channel
+      .send(
+        "Tu es prêt <@" +
+          originalMessage.mentions.users.keys().next().value +
+          "> ? [Oui/Non]"
+      )
+      .then((msg) => {
+        msg.react("👍");
+        msg.react("👎");
+        msg
+          .awaitReactions(
+            (reaction, user) =>
+              user.id === this.users[1] &&
+              (reaction.emoji.name === "👍" || reaction.emoji.name === "👎"),
+            { max: 1, time: 10000 }
+          )
+          .then((react) => {
+            if (react.first().emoji.name === "👍") {
+              clearTimeout(this.acceptDelay);
+              msg.channel.send("Le match a été accepté ! Préparez-vous !");
+              this.step++;
+              this.countdown(msg);
+            } else if (react.first().emoji.name === "👎") {
+              clearTimeout(this.acceptDelay);
+              msg.channel.send("Le match a été refusé ! BOUUUH !!");
+              this.deletePfc();
+            }
+          })
+          .catch(() => {});
+      })
+      .catch((err) => {
+        if (err) throw err;
+      });
     this.acceptDelay = setTimeout(() => {
       originalMessage.channel.send("Temps écoulé ! Le match est annulé.");
       this.deletePfc();
-    }, 5000);
+    }, 10000);
     client.on("message", (msg) => {
       if (this.inGame) {
         switch (this.step) {
