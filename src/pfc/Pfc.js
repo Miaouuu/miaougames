@@ -139,44 +139,46 @@ class Pfc {
   allCases(msg) {
     if (this.answers[0] === this.answers[1]) {
       msg.channel.send("Égalité !");
+      this.updateUser(0, 0, 0, 1);
+      this.updateUser(1, 0, 0, 1);
     } else if (this.answers[0] === "P") {
       if (this.answers[1] === "C") {
         msg.channel.send("<@" + this.users[0] + "> a gagné !");
-        this.updateUser(0, 1, 0);
-        this.updateUser(1, 0, 1);
+        this.updateUser(0, 1, 0, 0);
+        this.updateUser(1, 0, 1, 0);
       } else if (this.answers[1] === "F") {
         msg.channel.send("<@" + this.users[1] + "> a gagné !");
-        this.updateUser(0, 0, 1);
-        this.updateUser(1, 1, 0);
+        this.updateUser(0, 0, 1, 0);
+        this.updateUser(1, 1, 0, 0);
       }
     } else if (this.answers[0] === "F") {
       if (this.answers[1] === "C") {
         msg.channel.send("<@" + this.users[1] + "> a gagné !");
-        this.updateUser(0, 0, 1);
-        this.updateUser(1, 1, 0);
+        this.updateUser(0, 0, 1, 0);
+        this.updateUser(1, 1, 0, 0);
       } else if (this.answers[1] === "P") {
         msg.channel.send("<@" + this.users[0] + "> a gagné !");
-        this.updateUser(0, 1, 0);
-        this.updateUser(1, 0, 1);
+        this.updateUser(0, 1, 0, 0);
+        this.updateUser(1, 0, 1, 0);
       }
     } else if (this.answers[0] === "C") {
       if (this.answers[1] === "P") {
         msg.channel.send("<@" + this.users[1] + "> a gagné !");
-        this.updateUser(0, 0, 1);
-        this.updateUser(1, 1, 0);
+        this.updateUser(0, 0, 1, 0);
+        this.updateUser(1, 1, 0, 0);
       } else if (this.answers[1] === "F") {
         msg.channel.send("<@" + this.users[0] + "> a gagné !");
-        this.updateUser(0, 1, 0);
-        this.updateUser(1, 0, 1);
+        this.updateUser(0, 1, 0, 0);
+        this.updateUser(1, 0, 1, 0);
       }
     }
     this.deletePfc();
   }
 
-  updateUser(user, win, loose) {
+  updateUser(user, win, loose, tie) {
     User.updateOne(
       { discordId: this.users[user] },
-      { $inc: { wins: win, looses: loose, total: 1 } },
+      { $inc: { wins: win, looses: loose, tie: tie, total: 1 } },
       { upsert: true, setDefaultsOnInsert: true },
       (err) => {
         if (err) throw err;

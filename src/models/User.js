@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  tie: {
+    type: Number,
+    default: 0,
+  },
   total: {
     type: Number,
     default: 0,
