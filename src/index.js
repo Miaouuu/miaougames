@@ -15,7 +15,7 @@ mongoose.connect("mongodb://localhost:27017/miaougames", {
 });
 
 client.on("ready", () => {
-  client.user.setActivity("concocter un nouveau jeu");
+  client.user.setActivity("concocter un jeu");
 });
 
 client.on("message", (msg) => {
